@@ -1,0 +1,35 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: admin-laravel-mysql
+    environment:
+      MYSQL_DATABASE: admin_laravel
+      MYSQL_USER: admin_laravel
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root_secret
+    ports:
+      - "13306:3306"
+    volumes:
+      - admin_laravel_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot_secret"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: admin-laravel-redis
+    ports:
+      - "16379:6379"
+    volumes:
+      - admin_laravel_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  admin_laravel_mysql:
+  admin_laravel_redis:
